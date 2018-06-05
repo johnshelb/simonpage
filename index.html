@@ -5,300 +5,351 @@
 	body{
 		background-color: aqua;
 	}
-	div{
-		border-width: 25px;
-		border-color: red;
-	}
+
 	button{
-		height:100px;
-		width:100px;
+		height:200px;
+		width:200px;
 		background-color:transparent;
 	}
-	#red{
-		background-color:red;
+	.bottom{
+		position:absolute;
 		height:100px;
-		width:100px;
-		margin:auto;
-		}#blue{
-			background-color:blue;
-			height:100px;
-			width:100px;
-			margin-left:450px;
-			}#green{
-				background-color:green;
-				height:100px;
-				width:100px;
-				margin-left:55px;
-				}#yellow{
-					background-color:yellow;
-					height:100px;
-					width:100px;
-					margin-left:55px;
-					}#black{
-						background-color:black;
-						height:100px;
-						width:100px;
-						margin-left:610px;
+		background-color: black;
+		color:red;
+		font-size: 24px;
+		top:650px;
+
+	}
+	#red{
+		position:absolute;
+		top:0px;
+		background-color:red;
+		height:200px;
+		width:200px;
+		margin-left:355px;
+	}
+
+	#midcolors{
+		position:absolute;
+		width:712px;
+		display:inline-block;
+		top:225px;
+		margin-left:100px;
+
+	}
+
+	#blue{
+		background-color:blue;
+		height:200px;
+		width:200px;
+	}
+	#green{
+		background-color:green;
+		height:200px;
+		width:200px;
+		margin-right:10px;
+		margin-left:10px;
+	}
+	#yellow{
+		background-color:yellow;
+		height:200px;
+		width:200px;
+	}
+	#black{
+		position:absolute;
+		background-color:black;
+		height:200px;
+		width:200px;
+		margin-left:355px;
+		top:450px;
+	}
+	#pattern{
+		border-style:solid;
+		border-color:red;
+		border-width: thick;
+		height:120px;
+		width:120px;
+		text-align: center;
+		margin-left:700px;
+		top:235px;
+		color:red;
+		font-size:40px;
+		z-index:0;
+	}
+
+
+	</style>
+</head>
+<body>
+	<div id="settings" style="display:inline-block; background-color:lightgreen; width:299px;position:relative;" >
+		<h3>How many elements can you handle in the sequence?</h3>
+		<div style="background-color:yellow;  width:299px;">
+			<input id="5" type="radio" name="number" value="5" checked>5<br>
+			<input  id="7" type="radio" name="number" value="7">7<br>
+			<input  id="10" type="radio" name="number" value="10">10<br>
+			<input  id="200" type="radio" name="number" value="custom">Custom:
+			<input id="customNumber" type="text" placeholder="How many elements?"></>
+		</div>
+
+		<h3>CHOOSE YOUR SPEED:</h3>
+			<div style="background-color:yellow;  width:299px;">
+				<input type="radio" name="speed" value="slow">Slow (2 seconds each)<br>
+				<input type="radio" name="speed" value="medium" >Medium (1 second each)<br>
+				<input type="radio" name="speed" value="fast" checked>Fast (0.5 seconds each)<br>
+				<input type="radio" name="speed" value="customSpeed">Custom:
+				<input id="customSpeed" type="number" min="1" placeholder="How many seconds?"></>
+			</div>
+			<div id="pattern" style="position:absolute"></div>
+
+	</div>
+
+
+		<div position="relative" style="text-align:center; display:inline-block;">
+			<div id="red" position:"absolute"><button onclick="red()" class="color"></button ></div>
+				<br>
+				<br>
+				<br>
+				<div id="midcolors" position="absolute">
+					<div id="blue" position="absolute" style="display:inline-block"><button class="color" onclick="blue()"></button></div>
+					<div id="green" position="absolute" style="display:inline-block"><button class="color" onclick="green()"></button></div>
+					<div id="yellow" position="absolute" style="display:inline-block"><button class="color" onclick="yellow()"></button></div>
+				</div>
+				<br>
+				<br>
+				<br>
+				<br>
+				<br>
+				<br>
+				<br>
+				<br>
+				<div id="black" position="absolute"><button class="color" onclick="black()"></button></div>
+		</div>
+
+		<div style="text-align:center;">
+			<button class="bottom" onclick="clik()" style="margin-left:-250px;">Show pattern</button>
+			<button class="bottom" onclick="reshow()" style="margin-left:150px;">Show it again</button>
+			<h1 id="result" style="text-align:left; width:150px;"></h1>
+		</div>
+
+			<script>
+
+			var solution=[]
+			var guess=[]
+			var speed=500
+			var number=5
+			var i = 0
+			var result=document.getElementById("result")
+			var colbut = document.getElementsByClassName('color');
+			var colorButtons = Array.prototype.slice.call(colbut, 0);
+
+
+			//Constantly check if the "Custom" number button is chosen and, if not, clearing and disabling the text input field
+			var fieldCheck = setInterval(fieldCheck,1000)
+
+			function fieldCheck(){
+				var q = document.querySelector("input[value=custom]")
+
+				if (!q.checked){
+					document.getElementById("customNumber").disabled = true
+					document.getElementById("customNumber").value = ""
+
+				}else{
+					document.getElementById("customNumber").disabled = false
+				}
+			}
+
+
+			var fieldCheck2 = setInterval(fieldCheck2,1000)
+
+			function fieldCheck2(){
+				var q2 = document.querySelector("input[value=customSpeed]")
+
+				if (!q2.checked){
+					document.getElementById("customSpeed").disabled = true
+					document.getElementById("customSpeed").value = ""
+
+				}else{
+					document.getElementById("customSpeed").disabled = false
+				}
+			}
+
+
+
+
+			function countCheck(){
+				console.log(`g=${guess.length} and s=${solution.length}` )
+				if (guess.length==solution.length){
+					check()
+				}
+				else{
+					result.innerHTML=`Not there yet--you have ${solution.length-guess.length} more to go`
+				}
+			}
+
+			function clearGuess(){
+				guess=[]
+				result.innerHTML=""
+			}
+
+			function blue(){
+				guess.push(1)
+				countCheck()
+			}
+
+			function green(){
+				guess.push(2)
+				countCheck()
+			}
+
+			function yellow(){
+				guess.push(3)
+				countCheck()
+			}
+
+			function red(){
+				guess.push(4)
+				countCheck()
+			}
+
+			function black(){
+				guess.push(5)
+				countCheck()
+			}
+
+			function clik(){
+				solution=[]
+				clearGuess()
+				colorButtons.forEach(function(item){item.disabled=false})
+
+
+				document.querySelector("#pattern").innerHTML="Get Ready!"
+				document.querySelector("#pattern").style.zIndex=1
+
+				//Apply user input to determine length of sequence
+				if (document.querySelector("input[name=number]:checked").value=="custom"){
+					number = document.querySelector("#customNumber").value
+				}
+				else{
+					number=document.querySelector("input[name=number]:checked").value
+				}
+				result.innerHTML=`Number of elements in your sequence: ${number}`
+
+
+
+				//Apply user input to determine speed of sequence
+				var x=document.querySelector("input[name=speed]:checked")
+
+				switch (x.value){
+					case "slow":
+					speed=2000
+					break
+					case "medium":
+					speed=1000
+					break
+					case "fast":
+					speed=500
+					break
+					case "customSpeed":
+					speed=document.querySelector("#customSpeed").value * 1000
+				}
+
+				var el=document.getElementById("pattern")
+				var i=0
+
+				//generate random sequence based on `number` chosen by user
+				for(let w=0;w<number;w++){
+					solution.push(Math.floor(Math.random()*5)+1)
+				}
+				//displays sequence at `speed` determined by user input
+
+				var int=setInterval(displaySequence,speed)
+
+
+				function displaySequence(){
+					el.style.zIndex="1"
+					el.innerHTML=`<p style="color:maroon;top:50px">${i+1}</p>`
+					var x = solution[i]
+					if(x==1){
+						el.style.backgroundColor="blue"
 					}
-					#pattern{
-						height:100px;
-						width:100px;
-						text-align: center;
-						margin:auto;
-						color:red;
-						font-size:50px;
+					else if(x==2){
+						el.style.backgroundColor="green"
 					}
+					else if(x==3){
+						el.style.backgroundColor="yellow"
+					}
+					else if(x==4){
+						el.style.backgroundColor="red"
+					}
+					else if(x==5){
+						el.style.backgroundColor="black"
+					}
+					else{
+						el.style.backgroundColor=""
+						el.innerHTML=""
+						el.style.zIndex="-1"
+						clearInterval(int)
+					}
+					i++
+
+				}
+			}
 
 
-					</style>
-				</head>
-				<body>
-					<div style="display:inline-block; background-color:lightgreen; width:299px;" position="relative">
-						<div>
-							<h3>CHOOSE YOUR SPEED:</h3></div>
-							<div style="margin-top: 0px;background-color:yellow;  width:299px;" position="absolute">
-								<input type="radio" name="speed" value="slow">Slow (2 seconds each)<br>
-								<input type="radio" name="speed" value="medium" checked>Medium (1 second each)<br>
-								<input type="radio" name="speed" value="fast">Fast (0.2 seconds each)<br>
-								<input type="radio" name="speed" value="customSpeed">Custom:
-								<input id="customSpeed" type="number" min="1" placeholder="How many seconds?"></>
+			function reshow(){
+				result.innerHTML="Better luck this time!"
+				document.querySelector("#pattern").innerHTML="Get Ready!"
+				var el=document.getElementById("pattern")
+				var i=0
+				var int=setInterval(displaySequence,speed)
 
+				function displaySequence(){
+					el.style.zIndex="1"
+					el.innerHTML=`<p style="color:maroon;top:50px">${i+1}</p>`
+					var x = solution[i]
+					if(x==1){
+						el.style.backgroundColor="blue"
+					}
+					else if(x==2){
+						el.style.backgroundColor="green"
+					}
+					else if(x==3){
+						el.style.backgroundColor="yellow"
+					}
+					else if(x==4){
+						el.style.backgroundColor="red"
+					}
+					else if(x==5){
+						el.style.backgroundColor="black"
+					}
+					else{
+						el.style.backgroundColor=""
+						el.innerHTML=""
+						el.style.zIndex="-1"
+						clearInterval(int)
+						setInterval(fieldCheck,1000)
+					}
+					i++
 
-							</div>
-						</div>
-						<div style="display:inline-block">
-							<h4 style="background-color:pink;">How many elements can you handle in the sequence?</h4>
-							<input id="5" type="radio" name="number" value="5" checked>5<br>
-							<input  id="7" type="radio" name="number" value="7">7<br>
-							<input  id="10" type="radio" name="number" value="10">10<br>
-							<input  id="200" type="radio" name="number" value="custom">Custom:
-							<input id="customNumber" type="text"></>
-						</div>
+				}
 
-
-						<div position="relative">
-							<div id="red" position="absolute"><button onclick="red()"></button onclick="red()"></div>
-								<br>
-								<div position="absolute" style="margin:auto">
-								<div id="blue" position="absolute" style="display:inline-block"><button onclick="blue()"></button></div>
-								<div id="green" position="absolute" style="display:inline-block"><button onclick="green()"></button></div>
-								<div id="yellow" position="absolute" style="display:inline-block"><button onclick="yellow()"></button></div>
-							</div>
-								<br>
-								<br>
-								<div id="black" position="absolute" style="display:inline-block"><button onclick="black()"></button></div>
-							</div>
-							<br>
-							<br>
-							<div id="pattern"></div>
-							<button onclick="clik()" style="background-color:black; color:white;">Click for pattern</button>
-							<button onclick="reshow()" style="background-color:black; color:white;">Click to repeat</button>
-							<button onclick="check()" style="background-color:black; color:white;">Submit</button>
-							<h1 id="result"></h1>
-
-							<script>
-
-							var solution=[]
-							var guess=[]
-							var speed=500
-							var number=5
-							var i = 0
-							var result=document.getElementById("result")
-
-
-							//Constantly check if the "Custom" number button is chosen and, if not, clearing and disabling the text input field
-							var fieldCheck = setInterval(fieldCheck,1000)
-
-							function fieldCheck(){
-								var q = document.querySelector("input[value=custom]")
-
-								if (!q.checked){
-									document.getElementById("customNumber").disabled = true
-									document.getElementById("customNumber").value = ""
-
-								}else{
-									document.getElementById("customNumber").disabled = false
-								}
-							}
-
-
-							var fieldCheck2 = setInterval(fieldCheck2,1000)
-
-							function fieldCheck2(){
-								var q2 = document.querySelector("input[value=customSpeed]")
-
-								if (!q2.checked){
-									document.getElementById("customSpeed").disabled = true
-									document.getElementById("customSpeed").value = ""
-
-								}else{
-									document.getElementById("customSpeed").disabled = false
-								}
-							}
+			}
 
 
 
 
-
-
-							function clearGuess(){
-								guess=[]
-								result.innerHTML=""
-							}
-
-							function blue(){
-								guess.push(1)
-							}
-
-							function green(){
-								guess.push(2)
-							}
-
-							function yellow(){
-								guess.push(3)
-							}
-
-							function red(){
-								guess.push(4)
-							}
-
-							function black(){
-								guess.push(5)
-							}
-
-							function clik(){
-								solution=[]
-								clearGuess()
-								// clearInterval(fieldCheck)
-
-								document.querySelector("#pattern").innerHTML="Get Ready!"
-
-								//Apply user input to determine length of sequence
-								if (document.querySelector("input[name=number]:checked").value=="custom"){
-									number = document.querySelector("#customNumber").value
-								}
-								else{
-									number=document.querySelector("input[name=number]:checked").value
-								}
-								result.innerHTML=`Number of elements your sequence: ${number}`
-
-
-
-								//Apply user input to determine speed of sequence
-								var x=document.querySelector("input[name=speed]:checked")
-
-								switch (x.value){
-									case "slow":
-									speed=2000
-									break
-									case "medium":
-									speed=1000
-									break
-									case "fast":
-									speed=200
-									break
-									case "customSpeed":
-									speed=document.querySelector("#customSpeed").value * 1000
-								}
-
-								var el=document.getElementById("pattern")
-								var i=0
-
-								//generate random sequence based on `number` chosen by user
-								for(let w=0;w<number;w++){
-									solution.push(Math.floor(Math.random()*5)+1)
-								}
-								//displays sequence at `speed` determined by user input
-
-								var int=setInterval(displaySequence,speed)
-
-
-								function displaySequence(){
-									el.innerHTML=`<p style="color:maroon;top:50px">${i+1}</p>`
-									var x = solution[i]
-									if(x==1){
-										el.style.backgroundColor="blue"
-									}
-									else if(x==2){
-										el.style.backgroundColor="green"
-									}
-									else if(x==3){
-										el.style.backgroundColor="yellow"
-									}
-									else if(x==4){
-										el.style.backgroundColor="red"
-									}
-									else if(x==5){
-										el.style.backgroundColor="black"
-									}
-									else{
-										el.style.backgroundColor="aqua"
-										el.innerHTML=""
-										clearInterval(int)
-									}
-									i++
-
-								}
-							}
-
-
-							function reshow(){
-								document.querySelector("#pattern").innerHTML="Get Ready!"
-								var el=document.getElementById("pattern")
-								var i=0
-								var int=setInterval(displaySequence,speed)
-
-								function displaySequence(){
-									el.innerHTML=`<p style="color:maroon;top:50px">${i+1}</p>`
-									var x = solution[i]
-									if(x==1){
-										el.style.backgroundColor="blue"
-									}
-									else if(x==2){
-										el.style.backgroundColor="green"
-									}
-									else if(x==3){
-										el.style.backgroundColor="yellow"
-									}
-									else if(x==4){
-										el.style.backgroundColor="red"
-									}
-									else if(x==5){
-										el.style.backgroundColor="black"
-									}
-									else{
-										el.style.backgroundColor="aqua"
-										el.innerHTML=""
-										clearInterval(int)
-										setInterval(fieldCheck,1000)
-									}
-									i++
-
-								}
-							}
-
-
-
-
-							function check(){
-								console.log(`solution in check function = ${solution}`)
-								console.log(`guess in check function = ${guess}`)
-
-								if (guess.length!=solution.length){
-									console.log(`guess is ${guess}`)
-									console.log(`solution is ${solution}`)
-									result.innerHTML="That's not even the right number of colors!<button onclick='clearGuess()'>Try Again</button>"
-								}
-								else{
-									for(let i=0;i<5;i++){
-										if (guess[i]!=solution[i]){
-											clearGuess()
-											return result.innerHTML="Sorry, that's not quite it!"
-										}
-									}
-									return result.innerHTML="You got it!  Try a harder one!"
-								}
-							}
-							</script>
-						</body>
-						</html>
+			function check(){
+				//check each element of guess array against solution
+					for(let i=0;i<5;i++){
+						if (guess[i]!=solution[i]){
+							clearGuess()
+							return result.innerHTML="Sorry, that's not quite it!"
+						}
+					}
+					//disable buttons during check to avoid negative number readout
+					colorButtons.forEach(function(item){item.disabled=true})
+					return result.innerHTML="You got it!  Try a harder one!"
+					}
+			</script>
+		</body>
+		</html>
